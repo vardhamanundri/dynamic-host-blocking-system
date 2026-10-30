@@ -1,2 +1,0 @@
-label,target,requested_rate,requested_duration,attempts,success,timeouts,refused,other_errors,success_rate_percent,average_latency_ms,p95_latency_ms,actual_duration_seconds,first_failure_seconds
-BASELINE-H1,10.0.0.4:5001,1.0,3.0,3,3,0,0,0,100.0,0.94,0.97,3.0,

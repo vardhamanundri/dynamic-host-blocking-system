@@ -1,8 +1,8 @@
-experiment,label,target,requested_rate,requested_duration,attempts,success,timeouts,refused,other_errors,success_rate_percent,average_latency_ms,p95_latency_ms,actual_duration_seconds,first_failure_seconds
-Baseline - Normal h1,BASELINE-H1,10.0.0.4:5001,1.0,3.0,3,3,0,0,0,100.0,0.94,0.97,3.0,
-Baseline - Attack h2,BASELINE-ATTACK,10.0.0.4:5001,20.0,6.0,120,120,0,0,0,100.0,0.83,1.22,6.03,
-Baseline - Legitimate h3,BASELINE-LEGITIMATE,10.0.0.4:5001,1.0,6.0,6,6,0,0,0,100.0,1.21,2.56,6.0,
-Dynamic - Normal h1,DYNAMIC-H1,10.0.0.4:5001,1.0,3.0,3,3,0,0,0,100.0,3.92,4.45,3.0,
-Dynamic - Attack h2,DYNAMIC-ATTACK,10.0.0.4:5001,20.0,6.0,22,7,15,0,0,31.82,4.27,5.1,6.36,0.75
-Dynamic - Legitimate h3,DYNAMIC-LEGITIMATE,10.0.0.4:5001,1.0,6.0,6,6,0,0,0,100.0,4.3,4.61,6.0,
-Dynamic - Recovery h2,DYNAMIC-RECOVERY,10.0.0.4:5001,1.0,3.0,3,3,0,0,0,100.0,4.25,5.93,3.0,
+label,target,attempts,success,timeouts,refused,errors,success_rate,avg_ms,p95_ms,first_failure_s
+BASELINE-NORMAL,10.0.0.4:5001,3,3,0,0,0,100.0,2.02,4.38,
+BASELINE-LEGITIMATE,10.0.0.4:5001,6,6,0,0,0,100.0,0.9,1.97,
+BASELINE-ATTACK,10.0.0.4:5001,120,120,0,0,0,100.0,0.92,1.34,
+DYNAMIC-NORMAL,10.0.0.4:5001,3,3,0,0,0,100.0,4.76,5.43,
+DYNAMIC-LEGITIMATE,10.0.0.4:5001,6,6,0,0,0,100.0,4.06,4.99,
+DYNAMIC-ATTACK,10.0.0.4:5001,22,7,15,0,0,31.82,3.98,5.79,0.75
+RECOVERY-H2,10.0.0.4:5001,3,3,0,0,0,100.0,4.83,6.59,

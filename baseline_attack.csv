@@ -1,2 +1,0 @@
-label,target,requested_rate,requested_duration,attempts,success,timeouts,refused,other_errors,success_rate_percent,average_latency_ms,p95_latency_ms,actual_duration_seconds,first_failure_seconds
-BASELINE-ATTACK,10.0.0.4:5001,20.0,6.0,120,120,0,0,0,100.0,0.83,1.22,6.03,
