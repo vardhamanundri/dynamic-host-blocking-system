@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
-"""Run static-OVS baseline and dynamic-SDN comparison in Mininet."""
-import os, signal, subprocess, sys, time
+"""Compare static OVS forwarding with dynamic SDN host blocking."""
+import os
+import signal
+import subprocess
+import sys
+import time
 from functools import partial
-from mininet.net import Mininet
-from mininet.node import RemoteController, OVSSwitch, OVSBridge
 from mininet.log import setLogLevel
+from mininet.net import Mininet
+from mininet.node import OVSBridge, OVSSwitch, RemoteController
 from topology import DynamicBlockingTopo
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-APP = os.path.join(ROOT, 'tcp_app.py')
-CSV = os.path.join(ROOT, 'performance_results.csv')
-LOG = os.path.join(ROOT, 'controller_performance.log')
+APP, CSV, LOG = (os.path.join(ROOT, f) for f in
+                 ('tcp_app.py', 'performance_results.csv', 'controller_performance.log'))
 
+
+def log_text():
+    with open(LOG) as file:
+        return file.read()
 
 def traffic(host, rate, seconds, label):
     return host.popen(['python3', APP, 'client', '--host', '10.0.0.4',
@@ -19,10 +26,10 @@ def traffic(host, rate, seconds, label):
         '--csv', CSV], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
 
-def show(process):
-    output, _ = process.communicate(timeout=40)
+def show(proc):
+    output, _ = proc.communicate(timeout=40)
     print(output, end='')
-    if process.returncode:
+    if proc.returncode:
         raise RuntimeError('TCP traffic process failed')
 
 
@@ -35,11 +42,10 @@ def experiment(dynamic):
                 cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             time.sleep(2)
             if controller.poll() is not None:
-                raise RuntimeError('OS-Ken did not start; check controller log')
-        switch = partial(OVSSwitch, protocols='OpenFlow13') if dynamic else OVSBridge
+                raise RuntimeError('OS-Ken failed; inspect controller_performance.log')
         ctrl = partial(RemoteController, ip='127.0.0.1', port=6653) if dynamic else None
-        net = Mininet(topo=DynamicBlockingTopo(), controller=ctrl, switch=switch,
-                      autoSetMacs=True, waitConnected=dynamic)
+        net = Mininet(topo=DynamicBlockingTopo(), controller=ctrl,
+            switch=OVSSwitch if dynamic else OVSBridge, waitConnected=dynamic)
         net.start()
         if net.pingAll() != 0:
             raise RuntimeError('Mininet connectivity test failed')
@@ -54,16 +60,20 @@ def experiment(dynamic):
         show(legitimate)
         if dynamic:
             flows = s1.cmd('ovs-ofctl -O OpenFlow13 dump-flows s1')
-            if 'nw_src=10.0.0.2' not in flows or 'actions=drop' not in flows:
-                raise RuntimeError('Attacker DROP rule was not found')
-            deadline = time.time() + 35
-            while time.time() < deadline:
-                with open(LOG) as f:
-                    if '[UNBLOCK] Host 10.0.0.2' in f.read():
-                        break
+            drops = [line for line in flows.splitlines() if 'actions=drop' in line]
+            if not any('nw_src=10.0.0.2' in line for line in drops):
+                raise RuntimeError('Attacker DROP rule not found')
+            if any('nw_src=10.0.0.3' in line for line in drops):
+                raise RuntimeError('Legitimate host h3 was blocked')
+            print('Verified DROP rule:', *drops, sep='\n')
+            deadline = time.time() + 40
+            while '[UNBLOCK] Host 10.0.0.2' not in log_text():
+                if time.time() > deadline:
+                    raise RuntimeError('Attacker did not recover')
                 time.sleep(.5)
-            else:
-                raise RuntimeError('Attacker did not recover after cooldown')
+            logs = log_text()
+            if '[FLOW-STAT]' not in logs or '[ALERT]' not in logs:
+                raise RuntimeError('Detection or flow statistics were not logged')
             show(traffic(h2, 1, 3, 'RECOVERY-H2'))
     finally:
         if server:
@@ -76,7 +86,10 @@ def experiment(dynamic):
             net.stop()
         if controller:
             os.killpg(controller.pid, signal.SIGTERM)
-            controller.wait(timeout=5)
+            try:
+                controller.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                controller.kill()
         if log:
             log.close()
         subprocess.run(['mn', '-c'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -84,16 +97,16 @@ def experiment(dynamic):
 
 def main():
     if os.geteuid() != 0:
-        sys.exit('Run with: sudo python3 performance_test.py')
+        sys.exit('Run: sudo python3 performance_test.py')
     setLogLevel('warning')
     if os.path.exists(CSV):
         os.remove(CSV)
     subprocess.run(['mn', '-c'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     experiment(False)
     experiment(True)
-    print('\nCombined measurements:', CSV)
-    with open(CSV) as results:
-        print(results.read())
+    print('\nFresh measurements:', CSV)
+    print(open(CSV).read())
+
 
 if __name__ == '__main__':
     main()
