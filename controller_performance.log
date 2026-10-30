@@ -1,0 +1,72 @@
+1 RLock(s) were not greened, to fix this error make sure you run eventlet.monkey_patch() before importing any other modules.
+loading app controller.py
+loading app os_ken.controller.ofp_handler
+instantiating app controller.py of DynamicHostBlockingController
+==================================================
+ Project 12: Dynamic Host Blocking SDN Controller 
+ Sliding Window: 5.0s | SYN Threshold: 8 | Cooldown: 25.0s
+==================================================
+instantiating app os_ken.controller.ofp_handler of OFPHandler
+[RULES] Initialized Table-Miss & TCP SYN monitoring on DPID=0000000000000001
+[SWITCH] Connected: DPID=0000000000000001
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SYN-MONITOR] Priority=100 | Packets=0 | Bytes=0 | Duration=1s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SYN-MONITOR] Priority=100 | Packets=0 | Bytes=0 | Duration=5s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+[RATE-MONITOR] 10.0.0.1 -> 10.0.0.4 | SYNs: 1/8 in 5.0s
+[RATE-MONITOR] 10.0.0.1 -> 10.0.0.4 | SYNs: 2/8 in 5.0s
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SYN-MONITOR] Priority=100 | Packets=4 | Bytes=296 | Duration=9s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+[RATE-MONITOR] 10.0.0.1 -> 10.0.0.4 | SYNs: 3/8 in 5.0s
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 1/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 1/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 2/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 3/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 4/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 5/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 6/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 7/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 8/8 in 5.0s
+>>> [ALERT] SUSPICIOUS HOST DETECTED: 10.0.0.2 (Rate: 8 SYNs in 5.0s, Threshold: 8) <<<
+>>> [BLOCKLIST] Added 10.0.0.2 to dynamic blocklist for 25.0s <<<
+>>> [SDN DROP RULE] Installed DROP rule for 10.0.0.2 (Priority 200) on DPID=0000000000000001
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 2/8 in 5.0s
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 3/8 in 5.0s
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=39 | Bytes=2700 | Duration=2s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=20 | Bytes=1480 | Duration=13s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 4/8 in 5.0s
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 5/8 in 5.0s
+[RATE-MONITOR] 10.0.0.3 -> 10.0.0.4 | SYNs: 5/8 in 5.0s
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=48 | Bytes=3366 | Duration=6s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=17s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=48 | Bytes=3366 | Duration=10s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=21s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=48 | Bytes=3366 | Duration=14s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=25s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=48 | Bytes=3366 | Duration=18s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=29s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SDN-DROP-RULE] Priority=200 | Packets=48 | Bytes=3366 | Duration=22s | Match={'eth_type': 2048, 'ipv4_src': '10.0.0.2'}
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=33s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+>>> [RECOVERY] Removed DROP rule for 10.0.0.2 on DPID=0000000000000001
+>>> [UNBLOCK] Host 10.0.0.2 cooldown expired. Removed from dynamic blocklist. Traffic restored. <<<
+--- [FLOW-STATISTICS DPID=0000000000000001] ---
+  [SYN-MONITOR] Priority=100 | Packets=26 | Bytes=1924 | Duration=37s | Match={'eth_type': 2048, 'ip_proto': 6, 'tcp_flags': (2, 2)}
+------------------------------------------------
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 1/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 2/8 in 5.0s
+[RATE-MONITOR] 10.0.0.2 -> 10.0.0.4 | SYNs: 3/8 in 5.0s
